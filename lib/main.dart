@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:go_router_actual/screen/1_screen.dart';
 import 'package:go_router_actual/screen/2_screen.dart';
 import 'package:go_router_actual/screen/3_screen.dart';
+import 'package:go_router_actual/screen/error_screen.dart';
 import 'package:go_router_actual/screen/home_screen.dart';
 
 void main() {
@@ -13,34 +14,39 @@ class _App extends StatelessWidget {
   _App({Key? key}) : super(key: key);
 
   final GoRouter _router = GoRouter(
-        initialLocation: '/',
+    initialLocation: '/',
+    errorBuilder: (context, state) {
+      return ErrorScreen(
+        error: state.error.toString(),
+      );
+    },
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (_, state) => HomeScreen(),
         routes: [
           GoRoute(
-            path: '/',
-            builder: (_, state) => HomeScreen(),
+            path: 'one',
+            builder: (_, state) => OneScreen(),
             routes: [
               GoRoute(
-                path: 'one',
-                builder: (_, state) => OneScreen(),
+                path: 'two',
+                builder: (_, state) => TwoScreen(),
                 routes: [
+                  // http://.../one/two/three
                   GoRoute(
-                    path: 'two',
-                    builder: (_, state) => TwoScreen(),
-                    routes: [
-                      // http://.../one/two/three
-                      GoRoute(
-                        path: 'three',
-                        name: ThreeScreen.routeName,
-                        builder: (_, state) => ThreeScreen(),
-                      ),
-                    ],
+                    path: 'three',
+                    name: ThreeScreen.routeName,
+                    builder: (_, state) => ThreeScreen(),
                   ),
                 ],
               ),
             ],
           ),
         ],
-      );
+      ),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
